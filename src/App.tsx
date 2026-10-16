@@ -380,7 +380,7 @@ export default function App() {
           <p>No tiles yet.</p>
           <p className="empty__hint">
             Click the ⚙ button above to open Settings and add a tile. Each tile
-            monitors a service, price, channel, email, or AI credits.
+            monitors a service, price, channel, or hardware sensor.
           </p>
         </div>
       ) : (

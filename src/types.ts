@@ -45,14 +45,6 @@ export type MonitorKind =
       token_secret_ref: string;
     }
   | {
-      type: "email";
-      imap_host: string;
-      imap_port: number;
-      username: string;
-      password_secret_ref: string;
-    }
-  | { type: "ai_credits"; provider: string; api_key_secret_ref: string }
-  | {
       type: "discord";
       guild_id: string;
       channels: DiscordChannel[];

@@ -341,21 +341,6 @@ pub enum MonitorKind {
         /// Key into the OS keychain for the OAuth app token.
         token_secret_ref: String,
     },
-    /// IMAP unread email count.
-    Email {
-        imap_host: String,
-        #[serde(default = "default_imap_port")]
-        imap_port: u16,
-        username: String,
-        /// Key into the OS keychain for the password / app password.
-        password_secret_ref: String,
-    },
-    /// AI provider credit/token balance.
-    AiCredits {
-        provider: String,
-        /// Key into the OS keychain for the API key.
-        api_key_secret_ref: String,
-    },
     /// Discord voice-channel presence via the public guild widget.json endpoint.
     /// Requires the server's Widget to be enabled (Server Settings → Widget).
     Discord {
@@ -664,9 +649,6 @@ fn default_expected_status() -> u16 {
 }
 fn default_mc_port() -> u16 {
     25565
-}
-fn default_imap_port() -> u16 {
-    993
 }
 
 /// Click actions configurable per tile. Each maps to an `ActionSpec`.

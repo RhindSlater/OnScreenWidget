@@ -165,16 +165,6 @@ pub async fn check(tile_id: &str, kind: &MonitorKind) -> TileStatus {
             client_id,
             token_secret_ref,
         } => twitch(tile_id, channel_login, client_id, token_secret_ref).await,
-        MonitorKind::Email {
-            imap_host,
-            imap_port,
-            username,
-            password_secret_ref,
-        } => email(tile_id, imap_host, *imap_port, username, password_secret_ref).await,
-        MonitorKind::AiCredits {
-            provider,
-            api_key_secret_ref,
-        } => ai_credits(tile_id, provider, api_key_secret_ref).await,
         MonitorKind::Discord {
             guild_id,
             channels,
@@ -787,37 +777,6 @@ async fn twitch(tile_id: &str, login: &str, client_id: &str, token_ref: &str) ->
         Ok(r) => TileStatus::new(tile_id, Health::Warn, format!("HTTP {}", r.status().as_u16())),
         Err(e) => TileStatus::new(tile_id, Health::Down, format!("error • {}", short_err(&e))),
     }
-}
-
-// --- Email (IMAP unread count) ----------------------------------------------
-//
-// NOTE: a full IMAP client is added in a later phase. For now this reports
-// Unknown with guidance so the tile and config path are exercised end-to-end.
-
-async fn email(tile_id: &str, _host: &str, _port: u16, _user: &str, pw_ref: &str) -> TileStatus {
-    match secrets::get_secret(pw_ref) {
-        Ok(Some(_)) => TileStatus::new(tile_id, Health::Unknown, "IMAP check pending (phase 4)"),
-        Ok(None) => TileStatus::new(tile_id, Health::Unknown, "no password • set in settings"),
-        Err(e) => TileStatus::new(tile_id, Health::Unknown, format!("secret • {e}")),
-    }
-}
-
-// --- AI credits -------------------------------------------------------------
-//
-// Provider-specific balance endpoints vary; this dispatches per provider and
-// is extended as endpoints are confirmed.
-
-async fn ai_credits(tile_id: &str, provider: &str, key_ref: &str) -> TileStatus {
-    let _key = match secrets::get_secret(key_ref) {
-        Ok(Some(k)) => k,
-        Ok(None) => return TileStatus::new(tile_id, Health::Unknown, "no api key • set in settings"),
-        Err(e) => return TileStatus::new(tile_id, Health::Unknown, format!("secret • {e}")),
-    };
-    TileStatus::new(
-        tile_id,
-        Health::Unknown,
-        format!("{provider} balance check pending (phase 4)"),
-    )
 }
 
 // --- AWS Kiro usage ---------------------------------------------------------

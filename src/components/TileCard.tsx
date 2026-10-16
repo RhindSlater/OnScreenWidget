@@ -39,10 +39,6 @@ function defaultIcon(tile: Tile): string {
       return "▶️";
     case "twitch":
       return "🎮";
-    case "email":
-      return "✉️";
-    case "ai_credits":
-      return "🤖";
     case "discord":
       return "🎧";
     case "api":

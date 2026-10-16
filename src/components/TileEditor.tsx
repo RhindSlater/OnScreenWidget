@@ -22,8 +22,6 @@ const KIND_OPTIONS: { value: KindType; label: string }[] = [
   { value: "price", label: "Price tracker" },
   { value: "youtube", label: "YouTube channel" },
   { value: "twitch", label: "Twitch channel" },
-  { value: "email", label: "Email (IMAP) unread" },
-  { value: "ai_credits", label: "AI credits" },
   { value: "discord", label: "Discord voice presence" },
   { value: "api", label: "API (custom endpoint)" },
   { value: "metrics", label: "System metrics" },
@@ -54,16 +52,6 @@ function defaultKind(type: KindType): MonitorKind {
       return { type, sources: [{ kind: "channel", id: "" }] };
     case "twitch":
       return { type, channel_login: "", client_id: "", token_secret_ref: "" };
-    case "email":
-      return {
-        type,
-        imap_host: "",
-        imap_port: 993,
-        username: "",
-        password_secret_ref: "",
-      };
-    case "ai_credits":
-      return { type, provider: "openai", api_key_secret_ref: "" };
     case "discord":
       return { type, guild_id: "", channels: [], default_channel_id: "" };
     case "api":
@@ -529,68 +517,6 @@ export function TileEditor({ initial, existingIds, isNew, onSave, onCancel }: Pr
               value={k.token_secret_ref}
               placeholder="e.g. twitch_token (store it in Secrets below)"
               onChange={(e) => updateKind({ token_secret_ref: e.target.value })}
-            />
-          </div>
-        </>
-      )}
-
-      {k.type === "email" && (
-        <>
-          <div className="field-row">
-            <div className="field">
-              <label>IMAP host</label>
-              <input
-                value={k.imap_host}
-                placeholder="imap.gmail.com"
-                onChange={(e) => updateKind({ imap_host: e.target.value })}
-              />
-            </div>
-            <div className="field field--xs">
-              <label>Port</label>
-              <input
-                type="number"
-                value={k.imap_port}
-                onChange={(e) =>
-                  updateKind({ imap_port: Number(e.target.value) || 993 })
-                }
-              />
-            </div>
-          </div>
-          <div className="field">
-            <label>Username</label>
-            <input
-              value={k.username}
-              placeholder="you@example.com"
-              onChange={(e) => updateKind({ username: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label>Password secret key</label>
-            <input
-              value={k.password_secret_ref}
-              placeholder="e.g. email_pw (store it in Secrets below)"
-              onChange={(e) => updateKind({ password_secret_ref: e.target.value })}
-            />
-          </div>
-        </>
-      )}
-
-      {k.type === "ai_credits" && (
-        <>
-          <div className="field">
-            <label>Provider</label>
-            <input
-              value={k.provider}
-              placeholder="openai / anthropic / …"
-              onChange={(e) => updateKind({ provider: e.target.value })}
-            />
-          </div>
-          <div className="field">
-            <label>API key secret</label>
-            <input
-              value={k.api_key_secret_ref}
-              placeholder="e.g. openai_key (store it in Secrets below)"
-              onChange={(e) => updateKind({ api_key_secret_ref: e.target.value })}
             />
           </div>
         </>

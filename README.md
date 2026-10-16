@@ -1,7 +1,7 @@
 # OnScreen Widget
 
-A lightweight desktop widget that monitors your services, prices, channels,
-email, and AI credits — built with **Tauri 2** (Rust backend) + **React/TypeScript**
+A lightweight desktop widget that monitors hardware temperatures, Bluetooth
+batteries, services, prices and channels — built with **Tauri 2** (Rust backend) + **React/TypeScript**
 frontend. Designed to be fast, low-memory, and run on modest hardware.
 
 ![OnScreen Widget](docs/screenshot.png)
@@ -64,8 +64,6 @@ check reachability and dump a sample of readings if the list is empty.
 | Price tracker  | CSS-selector price extraction, history, drop/sale highlight         | ✅ working |
 | YouTube        | Public RSS feed — upload count badge + latest title; click actions  | ✅ working |
 | Twitch         | Helix API live check + viewer count (needs client id + token)       | ✅ working |
-| Email (IMAP)   | Unread count                                                        | 🚧 stubbed (phase 4) |
-| AI credits     | Per-provider balance                                                | 🚧 stubbed (phase 4) |
 
 **Window modes**
 - **Overlay** — always-on-top floating panel (transparent, frameless, draggable).
@@ -222,7 +220,7 @@ Single-click opens the price-history sparkline.
 > (`:nth-child`, `[attr=…]`, `>`/`+`/`~` combinators, `*`) is **not** supported;
 > such a selector makes the tile show *"price not found — check selector"*.
 
-### Secrets (Twitch / Email / AI credits)
+### Secrets (Twitch)
 
 Store the secret once via the backend command (hook up a settings form, or call
 from the devtools console in dev):
@@ -267,8 +265,6 @@ npm run build
 
 ### Roadmap (remaining)
 - Settings UI to add/edit tiles and store secrets without hand-editing JSON.
-- Full IMAP unread-count implementation for the Email tile.
-- Per-provider AI credit endpoints (OpenAI/Anthropic/etc.).
 - Optional AI-assisted price-selector suggestion.
 - System tray icon + show/hide hotkey.
 ```
