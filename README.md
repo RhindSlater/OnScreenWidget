@@ -4,53 +4,45 @@ A lightweight desktop widget that monitors your services, prices, channels,
 email, and AI credits — built with **Tauri 2** (Rust backend) + **React/TypeScript**
 frontend. Designed to be fast, low-memory, and run on modest hardware.
 
+![OnScreen Widget](docs/screenshot.png)
+
 Windows 11 first; macOS supported by the same codebase (Tauri handles the
 platform layer, and the OS-specific action code already branches for macOS).
 
 ---
 
-## Hardware sensors (LibreHardwareMonitor)
+## Hardware sensors
 
-The **metrics** and **graph** tiles can track real hardware sensors — not just
-temperatures but **fan speeds, voltages, clocks, power draw, usage, and current**.
-These come from **LibreHardwareMonitor (LHM)** — free, open source, and (unlike
-HWiNFO shared memory) with no 12-hour limit and no "sensors window must be open"
-quirk. The widget reads LHM's built-in local web server; no paid SDK and no
-kernel code of our own.
+The **metrics** and **graph** tiles can track real hardware sensors — CPU cores,
+motherboard, GPU, RAM and drives, plus **fan speeds, voltages, clocks, power draw,
+usage, and current**. Readings come from a small bundled helper
+(`sensor-helper/`, a .NET 8 console app built on
+[LibreHardwareMonitorLib](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor),
+MPL-2.0, restored from NuGet at build time). The widget starts it automatically,
+reads full-precision values twice a second, and stops it on exit — nothing to
+install or configure.
 
-Setup (Windows):
+Requirements (Windows):
 
-1. Download **LibreHardwareMonitor**
-   (https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/releases) and
-   run it (as administrator — it needs ring-0 access to read CPU/mobo sensors).
-2. In LHM: **Options → "Remote Web Server" → "Run"**. Leave the default port
-   **8085**. Keep LHM running (minimised is fine). The widget polls
-   `http://127.0.0.1:8085/data.json`.
-3. In a metrics/graph tile, add a metric and choose a source:
-   - **Temperature °C** — temperature sensors only, plus a synthesized
-     **CPU Core Max** (hottest CPU core). Simple when you just want temps.
-   - **Hardware sensor (LibreHardwareMonitor)** — *every* detected sensor,
-     annotated with its unit, e.g. **AMD Radeon RX 7900 XTX / Temperatures /
-     GPU Hot Spot — °C**, **… / GPU Memory — °C**, **CPU / Temperatures /
-     CPU Package — °C**, fan RPM, clocks, power, etc. The unit and label are
-     auto-filled from LHM when you pick one (both stay editable).
+- **.NET 8 runtime** on the machine running the app.
+- Run the widget **as administrator** to read CPU, motherboard and RAM sensors
+  (the helper loads a signed ring-0 driver). `run-dev.bat` requests elevation
+  for you; without it, those sensors are simply omitted (GPU and drives still work).
+- Temperature graph tiles use a fixed **20–120 °C** scale over a **5-minute** window.
 
-Use **Refresh sensors** to re-scan after starting LHM, and
-**Diagnose LibreHardwareMonitor** to check reachability and dump a sample of
-readings if the list is empty.
+If the helper isn't available, the widget falls back to the **LibreHardwareMonitor
+web server** (Options → "Remote Web Server" → Run, port 8085), and then to the
+OS sensors exposed by `sysinfo`.
 
-Notes:
-- If LHM / its web server isn't running, the dropdowns show *"none detected — run
-  LibreHardwareMonitor + enable its Remote Web Server"*. Temperature metrics then
-  fall back to whatever the OS exposes via `sysinfo` (often none on consumer
-  boards); other sensor types are LHM-only.
-- LHM must run **as administrator** to read most CPU/motherboard/RAM sensors;
-  the widget itself does **not** need elevation (it only makes a local HTTP call).
-- Large values are shown compactly (integer RPM/MHz/W, decimals for volts/amps).
-- Leaving the sensor field empty uses the first available reading of that kind.
-- The reading is cached ~750 ms, so sub-second graph polling won't hammer LHM.
-- macOS: LHM is Windows-only; this feature is a no-op there (falls back to
-  `sysinfo`).
+In a metrics/graph tile, add a metric and choose a source:
+- **Temperature °C** — temperature sensors only, plus a synthesized
+  **CPU Core Max** (hottest CPU core). Simple when you just want temps.
+- **Hardware sensor** — *every* detected sensor, annotated with its unit, e.g.
+  **GPU Core — °C**, **GPU Hot Spot — °C**, **CPU Package — °C**, fan RPM,
+  clocks, power, etc. The unit and label are auto-filled when you pick one.
+
+Use **Refresh sensors** to re-scan, and **Diagnose LibreHardwareMonitor** to
+check reachability and dump a sample of readings if the list is empty.
 
 ---
 
@@ -58,6 +50,13 @@ Notes:
 
 | Tile kind      | What it checks / does                                               | Status |
 | -------------- | ------------------------------------------------------------------- | ------ |
+| Hardware temps | Graph/metrics tiles for CPU cores, GPU, motherboard, RAM, drives    | ✅ working |
+| Bluetooth      | Battery % and charging state for chosen devices (incl. Logitech HID++ and 2.4 GHz keyboards) | ✅ working |
+| Water intake   | Click to log a cup; rolling 24 h window, goal progress, colour per quarter | ✅ working |
+| Fitness counter | Click to add 5; daily reset, lifetime total on hover               | ✅ working |
+| Date & time    | Clock tile; click opens the Windows calendar                        | ✅ working |
+| Media          | System media controls (play/pause/next) via Windows SMTC            | ✅ working |
+| Slideshow      | Cycles images/videos from a folder                                  | ✅ working |
 | Minecraft      | Java Server List Ping — online, player count, version               | ✅ working |
 | NAS / TCP      | Raw TCP connect to host:port                                        | ✅ working |
 | Jellyfin       | `/System/Info/Public` reachability + server name/version            | ✅ working |
