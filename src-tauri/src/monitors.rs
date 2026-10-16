@@ -1673,6 +1673,9 @@ fn make_cell(
     low: u8,
     stale: bool,
 ) -> BtDeviceReadout {
+    // Charging but no battery reading (e.g. device reports only a USB link):
+    // show full instead of "—".
+    let battery = if charging && battery.is_none() { Some(100) } else { battery };
     let label = label_override
         .filter(|l| !l.is_empty())
         .unwrap_or_else(|| name.to_string());
