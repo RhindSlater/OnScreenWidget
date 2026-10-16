@@ -1,0 +1,40 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Default capability set for the widget and settings windows.",
+  "windows": ["main", "settings"],
+  "permissions": [
+    "core:default",
+    "core:webview:allow-create-webview-window",
+    "core:window:allow-start-dragging",
+    "core:window:allow-set-always-on-top",
+    "core:window:allow-set-position",
+    "core:window:allow-set-size",
+    "core:window:allow-set-focus",
+    "core:window:allow-set-ignore-cursor-events",
+    "core:window:allow-set-skip-taskbar",
+    "core:window:allow-set-decorations",
+    "core:window:allow-show",
+    "core:window:allow-hide",
+    "core:window:allow-minimize",
+    "core:window:allow-close",
+    "core:window:allow-current-monitor",
+    "core:window:allow-available-monitors",
+    "core:window:allow-inner-size",
+    "core:window:allow-outer-position",
+    "core:app:default",
+    "shell:allow-open",
+    "dialog:allow-open",
+    "dialog:allow-save",
+    {
+      "identifier": "shell:allow-execute",
+      "allow": [
+        {
+          "name": "open-terminal",
+          "cmd": "cmd",
+          "args": true
+        }
+      ]
+    }
+  ]
+}

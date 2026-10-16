@@ -1,0 +1,65 @@
+[package]
+name = "onscreen-widget"
+version = "0.1.0"
+description = "Lightweight desktop widget for monitoring services, prices, channels, email, and AI credits."
+authors = ["you"]
+edition = "2021"
+rust-version = "1.77"
+
+# See https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix avoids name collision with the binary on Windows.
+name = "onscreen_widget_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset", "image-png", "tray-icon"] }
+tauri-plugin-shell = "2"
+tauri-plugin-dialog = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "net", "io-util", "time", "sync"] }
+reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+keyring = "3"
+chrono = { version = "0.4", features = ["serde"] }
+sysinfo = "0.32"
+dirs = "5"
+log = "0.4"
+env_logger = "0.11"
+hidapi = { version = "2.6.7", default-features = false, features = ["windows-native"] }
+
+# Windows-only: System Media Transport Controls (SMTC) for the Media tile.
+[target.'cfg(windows)'.dependencies]
+windows = { version = "0.62", features = [
+    "std",
+    "Media_Control",
+    "Foundation",
+    "Foundation_Collections",
+    "Storage_Streams",
+    "Win32_Foundation",
+    "Win32_Devices_DeviceAndDriverInstallation",
+    "Win32_Devices_Properties",
+    "Devices_Enumeration",
+    "Win32_System_Com",
+    "Win32_Security",
+    "Win32_System_Threading",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Input_KeyboardAndMouse",
+] }
+windows-collections = "0.3"
+
+[features]
+# This feature is used for production builds or when a dev server is not specified, DO NOT REMOVE!!
+custom-protocol = ["tauri/custom-protocol"]
+
+[profile.release]
+# Optimize for small, fast binaries — matches the "lightweight" requirement.
+panic = "abort"
+codegen-units = 1
+lto = true
+opt-level = "s"
+strip = true

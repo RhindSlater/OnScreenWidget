@@ -1,0 +1,60 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+
+# Rust / Tauri
+src-tauri/target/
+src-tauri/gen/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Python (webhook listener)
+__pycache__/
+*.pyc
+
+# Editor
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local config / secrets (runtime app data lives in OS app-data dir, but ignore any local test configs)
+*.local
+.env
+
+src-tauri/sensor-helper-bin/
+sensor-helper/bin/
+sensor-helper/obj/
+*.pdb
+
+# Personal data: runtime settings/counters normally live in the OS app-data
+# folder, but never commit local copies, backups, or secrets.
+config.json
+config.*.json
+config-*.json
+counters.json
+water.json
+history.json
+backups/
+secrets.json
+secrets.*.json
+*.pem
+*.key
+.copilot/
+
+# Webhook server local config
+server/*.env
+server/.env

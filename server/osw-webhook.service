@@ -1,0 +1,38 @@
+[Unit]
+Description=OnScreen Widget webhook command listener
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+# Run as a dedicated low-privilege user you create (see README). Avoid root.
+User=webhook
+Group=webhook
+
+# --- Configuration: edit these values ---------------------------------------
+# Generate a token: python3 -c "import secrets;print(secrets.token_urlsafe(32))"
+Environment=WEBHOOK_TOKEN=CHANGE_ME_LONG_RANDOM_TOKEN
+# Comma-separated list of allowed client IPs (your widget machine).
+Environment=WEBHOOK_ALLOWED_IPS=192.168.1.20
+# Bind address/port. Prefer a specific LAN IP over 0.0.0.0 if possible.
+Environment=WEBHOOK_HOST=0.0.0.0
+Environment=WEBHOOK_PORT=8787
+Environment=WEBHOOK_TIMEOUT=30
+
+ExecStart=/usr/bin/python3 /opt/osw-webhook/webhook_listener.py
+
+Restart=on-failure
+RestartSec=3
+
+# --- Hardening --------------------------------------------------------------
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=
+# Only allow outbound/inbound as needed; the service binds a TCP port.
+# If your allowed commands need to write somewhere, add it to ReadWritePaths.
+
+[Install]
+WantedBy=multi-user.target
